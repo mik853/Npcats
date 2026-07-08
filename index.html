@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPCats — 2,222 Cats Pretending to Have Free Will</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Mono:wght@400;700&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F3E9;
+    --ink:#1A1A1A;
+    --pink:#FF5CA8;
+    --lime:#C4F542;
+    --purple:#6B3FA0;
+    --line: rgba(26,26,26,0.15);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Baloo 2', sans-serif;
+    overflow-x:hidden;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(26,26,26,0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--pink); color:var(--paper);}
+
+  .noise-edge{
+    filter: drop-shadow(2px 2px 0 var(--ink));
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 14px 24px;
+    background: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .logo{
+    font-family:'Bungee', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    display:flex; align-items:center; gap:8px;
+    letter-spacing: 0.5px;
+  }
+  .logo .tag{
+    background:var(--ink); color:var(--paper);
+    font-family:'Space Mono', monospace;
+    font-size:11px; padding:3px 7px; border-radius:20px;
+    transform: rotate(-4deg);
+  }
+  .navlinks{display:flex; gap:22px; font-family:'Space Mono', monospace; font-size:14px;}
+  .navlinks a{text-decoration:none; position:relative; padding-bottom:2px;}
+  .navlinks a:hover{color:var(--purple);}
+  .navlinks a::after{
+    content:""; position:absolute; left:0; bottom:-2px; width:0; height:2px;
+    background:var(--pink); transition:width .2s ease;
+  }
+  .navlinks a:hover::after{width:100%;}
+  .navlinks{list-style:none;}
+
+  @media (max-width:640px){ .navlinks{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding: 70px 24px 60px;
+    text-align:center;
+    position:relative;
+    border-bottom:3px solid var(--ink);
+  }
+  .hero-sticker{
+    display:inline-block;
+    font-family:'Space Mono', monospace;
+    background:var(--lime);
+    border:2.5px solid var(--ink);
+    padding:6px 14px;
+    border-radius:30px;
+    font-size:13px;
+    transform: rotate(-3deg);
+    margin-bottom: 22px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  h1.headline{
+    font-family:'Bungee', sans-serif;
+    font-size: clamp(38px, 9vw, 96px);
+    line-height:0.95;
+    margin: 0 0 18px;
+    letter-spacing: -1px;
+  }
+  h1.headline .pink{color:var(--pink); -webkit-text-stroke: 2px var(--ink);}
+  h1.headline .purple{color:var(--purple);}
+  .sub{
+    font-size: clamp(16px, 2.2vw, 20px);
+    max-width: 620px;
+    margin: 0 auto 34px;
+    line-height:1.5;
+    font-weight:600;
+  }
+  .hero-ctas{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+  .btn{
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size:14px;
+    padding:14px 26px;
+    border:2.5px solid var(--ink);
+    border-radius:40px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 4px 4px 0 var(--ink);
+    background:var(--paper);
+  }
+  .btn:hover{ transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink);}
+  .btn:active{ transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--ink);}
+  .btn-primary{ background:var(--pink); }
+  .btn-alt{ background:var(--lime); }
+
+  .cat-row{
+    margin-top: 46px;
+    display:flex; justify-content:center; gap:14px; flex-wrap:wrap;
+  }
+  .cat-emoji-card{
+    width:64px; height:64px;
+    background:var(--paper);
+    border:2.5px solid var(--ink);
+    border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .cat-emoji-card:nth-child(2n){ transform: rotate(-6deg); }
+  .cat-emoji-card:nth-child(3n){ transform: rotate(5deg); }
+
+  section{padding: 70px 24px; border-bottom:3px solid var(--ink); position:relative;}
+  .section-inner{max-width:1080px; margin:0 auto;}
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:var(--purple);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  h2{
+    font-family:'Bungee', sans-serif;
+    font-size: clamp(30px, 5vw, 52px);
+    margin: 0 0 8px;
+    line-height:1.05;
+  }
+  .section-lede{
+    max-width:620px;
+    font-size:17px;
+    line-height:1.6;
+    font-weight:600;
+    opacity:0.85;
+    margin-bottom:44px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items:start;
+  }
+  @media (max-width:800px){ .about-grid{grid-template-columns:1fr;} }
+  .about-copy p{
+    font-size:16.5px; line-height:1.7; margin:0 0 18px; font-weight:600;
+  }
+  .about-copy strong{ background:var(--lime); padding:0 4px; border-radius:3px;}
+  .stat-card{
+    background:var(--ink); color:var(--paper);
+    border-radius:18px;
+    padding:26px;
+    transform: rotate(2deg);
+    box-shadow: 5px 5px 0 var(--purple);
+  }
+  .stat-card .stat-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding: 12px 0; border-bottom:1px dashed rgba(247,243,233,0.3);
+    font-family:'Space Mono', monospace;
+  }
+  .stat-card .stat-row:last-child{border-bottom:none;}
+  .stat-card .stat-num{ font-family:'Bungee', sans-serif; color:var(--lime); font-size:20px;}
+
+  /* ---------- SNEAK PEEKS ---------- */
+  .peek-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+  }
+  @media (max-width:900px){ .peek-grid{grid-template-columns: repeat(2,1fr);} }
+  @media (max-width:560px){ .peek-grid{grid-template-columns: 1fr;} }
+
+  .peek-card{
+    background:var(--paper);
+    border:3px solid var(--ink);
+    border-radius: 16px;
+    overflow:hidden;
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform .2s ease;
+  }
+  .peek-grid .peek-card:nth-child(2){ transform: rotate(-2deg); }
+  .peek-grid .peek-card:nth-child(3){ transform: rotate(2deg); }
+  .peek-grid .peek-card:nth-child(5){ transform: rotate(1.5deg); }
+  .peek-card:hover{ transform: translateY(-4px) rotate(0deg) !important; }
+
+  .peek-img-slot{
+    aspect-ratio: 1/1;
+    background:
+      repeating-linear-gradient(45deg, #ddd8ca, #ddd8ca 10px, #e8e4d8 10px, #e8e4d8 20px);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    border-bottom:3px solid var(--ink);
+  }
+  .peek-img-slot img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .peek-placeholder-txt{
+    font-family:'Space Mono', monospace;
+    background:var(--pink);
+    border:2px solid var(--ink);
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:12px;
+    text-align:center;
+    transform: rotate(-3deg);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .classified{
+    position:absolute; top:10px; right:10px;
+    background:var(--ink); color:var(--lime);
+    font-family:'Space Mono', monospace;
+    font-size:10px; padding:4px 8px; border-radius:4px;
+    letter-spacing:1px;
+  }
+  .peek-label{
+    padding: 14px 16px;
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    display:flex; justify-content:space-between;
+  }
+  .peek-label .id{ color:var(--purple); font-weight:700; }
+
+  /* ---------- TWEETS ---------- */
+  .tweet-strip{
+    display:flex; gap:20px; overflow-x:auto; padding-bottom:10px;
+    scrollbar-width: thin;
+  }
+  .tweet-card{
+    min-width: 300px;
+    background:var(--paper);
+    border:2.5px solid var(--ink);
+    border-radius:16px;
+    padding:20px;
+    box-shadow: 4px 4px 0 var(--ink);
+    flex-shrink:0;
+  }
+  .tweet-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .tweet-avatar{
+    width:40px; height:40px; border-radius:50%;
+    background: var(--purple);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; color:var(--paper); border:2px solid var(--ink);
+  }
+  .tweet-name{ font-weight:800; font-size:14px; }
+  .tweet-handle{ font-family:'Space Mono', monospace; font-size:12px; opacity:0.6;}
+  .tweet-body{ font-size:14.5px; line-height:1.55; font-weight:600; min-height:60px;}
+  .tweet-placeholder{
+    color: rgba(26,26,26,0.4); font-style:italic; font-weight:600;
+  }
+
+  /* ---------- FORM ---------- */
+  .form-wrap{
+    max-width: 620px; margin: 0 auto;
+    background: var(--ink); color:var(--paper);
+    border-radius: 22px;
+    padding: 40px 34px;
+    box-shadow: 8px 8px 0 var(--pink);
+  }
+  .form-wrap h2{ color:var(--paper); }
+  .steps{ display:flex; flex-direction:column; gap:16px; margin: 26px 0 30px;}
+  .step{
+    display:flex; gap:14px; align-items:flex-start;
+    font-family:'Space Mono', monospace; font-size:14px;
+  }
+  .step-num{
+    background:var(--lime); color:var(--ink);
+    width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; flex-shrink:0;
+  }
+  .step a{ color:var(--lime); text-decoration:underline;}
+
+  .form-group{ margin-bottom:18px; }
+  .form-group label{
+    display:block; font-family:'Space Mono', monospace;
+    font-size:13px; margin-bottom:7px; color:var(--lime);
+  }
+  .form-group input{
+    width:100%; padding:13px 16px;
+    border-radius:10px; border:2px solid rgba(247,243,233,0.3);
+    background: rgba(247,243,233,0.05);
+    color:var(--paper);
+    font-family:'Space Mono', monospace;
+    font-size:14px;
+  }
+  .form-group input::placeholder{ color: rgba(247,243,233,0.35); }
+  .form-group input:focus{
+    outline:none; border-color:var(--lime);
+    background: rgba(247,243,233,0.1);
+  }
+  .checkbox-row{
+    display:flex; align-items:flex-start; gap:10px;
+    font-family:'Space Mono', monospace; font-size:13px;
+    margin-bottom: 22px; line-height:1.5;
+  }
+  .checkbox-row input{ width:auto; margin-top:3px; accent-color: var(--lime);}
+
+  .submit-btn{
+    width:100%; padding:16px;
+    background:var(--pink); color:var(--ink);
+    border:none; border-radius:40px;
+    font-family:'Bungee', sans-serif;
+    font-size:16px; cursor:pointer;
+    box-shadow: 4px 4px 0 var(--lime);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .submit-btn:hover{ transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--lime); }
+  .submit-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+
+  .form-msg{
+    margin-top:16px; padding:12px 16px; border-radius:10px;
+    font-family:'Space Mono', monospace; font-size:13.5px; display:none;
+  }
+  .form-msg.show{ display:block; }
+  .form-msg.success{ background: rgba(196,245,66,0.15); border:1.5px solid var(--lime); color:var(--lime);}
+  .form-msg.error{ background: rgba(255,92,168,0.15); border:1.5px solid var(--pink); color:var(--pink);}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding: 30px 24px;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size:12.5px;
+    opacity:0.6;
+  }
+
+  .confetti-piece{
+    position:fixed; top:-10px; z-index:999; pointer-events:none;
+    border-radius:2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">🐱 NPCATS <span class="tag">2,222 units</span></div>
+  <ul class="navlinks">
+    <li><a href="#about">about</a></li>
+    <li><a href="#sneak-peeks">sneak peeks</a></li>
+    <li><a href="#feed">feed</a></li>
+    <li><a href="#whitelist">join wl</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="border-bottom:3px solid var(--ink);">
+  <div class="hero-sticker">⚠ NO FREE WILL DETECTED ⚠</div>
+  <h1 class="headline">2,222 CATS<br>WITH ZERO<br><span class="pink">SELF</span><span class="purple">AWARENESS</span></h1>
+  <p class="sub">NPCats is a collection of 2,222 cats living on Ethereum, each one fully convinced it's the main character. They're not. You might be though. Whitelist spots are open — act like it matters.</p>
+  <div class="hero-ctas">
+    <a href="#whitelist" class="btn btn-primary">Join the Whitelist →</a>
+    <a href="#about" class="btn btn-alt">What even is this</a>
+  </div>
+  <div class="cat-row">
+    <div class="cat-emoji-card">🐈</div>
+    <div class="cat-emoji-card">😹</div>
+    <div class="cat-emoji-card">🙀</div>
+    <div class="cat-emoji-card">🐈‍⬛</div>
+    <div class="cat-emoji-card">😾</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner about-grid">
+    <div class="about-copy">
+      <div class="eyebrow">// about us</div>
+      <h2>We Are Not Lore.<br>We Are Vibes.</h2>
+      <p>NPCats started as a joke in a group chat and, like most good jokes, nobody stopped it in time. Now it's 2,222 cats on Ethereum, each one an <strong>NPC with main character delusions</strong> — background characters who somehow think they're running the simulation.</p>
+      <p>There's no 40-page whitepaper here. No roadmap promising a metaverse. Just a collection built by people who think cats are funnier than most humans and that art should make you laugh before it makes you think.</p>
+      <p>Every cat in the collection is generated from a pool of hand-drawn traits — dumb hats, questionable expressions, backgrounds that make no sense, and the occasional trait so cursed we almost didn't ship it. <strong>We shipped it.</strong></p>
+      <p>If you're here for the memes, welcome home. If you're here for the "utility," we're working on it, but no promises — the cats are the utility.</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-row"><span>SUPPLY</span><span class="stat-num">2,222</span></div>
+      <div class="stat-row"><span>CHAIN</span><span class="stat-num">ETH</span></div>
+      <div class="stat-row"><span>VIBE</span><span class="stat-num">DEGEN</span></div>
+      <div class="stat-row"><span>SELF-AWARENESS</span><span class="stat-num">0%</span></div>
+      <div class="stat-row"><span>MEME DENSITY</span><span class="stat-num">MAX</span></div>
+      <div class="stat-row"><span>ROADMAP PAGES</span><span class="stat-num">N/A</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SNEAK PEEKS -->
+<section id="sneak-peeks">
+  <div class="section-inner">
+    <div class="eyebrow">// classified</div>
+    <h2>6 Sneak Peeks</h2>
+    <p class="section-lede">A few cats leaked early from the vault. Nobody knows how. We're not investigating too hard.</p>
+    <div class="peek-grid">
+      <!-- Repeat 6x: replace the <img> src to drop in real art -->
+      <div class="peek-card">
+        <div class="peek-img-slot">
+          <span class="classified">CLASSIFIED</span>
+          <!-- <img src="sneak-peek-1.jpg" alt="NPCat sneak peek 1"> -->
+          <span class="peek-placeholder-txt">DROP IMG HERE<br>sneak-peek-1.jpg</span>
+        </div>
+        <div class="peek-label"><span>NPCat #0041</span><span class="id">01/06</span></div>
+      </div>
+      <div class="peek-card">
+        <div class="peek-img-slot">
+          <span class="classified">CLASSIFIED</span>
+          <span class="peek-placeholder-txt">DROP IMG HERE<br>sneak-peek-2.jpg</span>
+        </div>
+        <div class="peek-label"><span>NPCat #0102</span><span class="id">02/06</span></div>
+      </div>
+      <div class="peek-card">
+        <div class="peek-img-slot">
+          <span class="classified">CLASSIFIED</span>
+          <span class="peek-placeholder-txt">DROP IMG HERE<br>sneak-peek-3.jpg</span>
+        </div>
+        <div class="peek-label"><span>NPCat #0777</span><span class="id">03/06</span></div>
+      </div>
+      <div class="peek-card">
+        <div class="peek-img-slot">
+          <span class="classified">CLASSIFIED</span>
+          <span class="peek-placeholder-txt">DROP IMG HERE<br>sneak-peek-4.jpg</span>
+        </div>
+        <div class="peek-label"><span>NPCat #1234</span><span class="id">04/06</span></div>
+      </div>
+      <div class="peek-card">
+        <div class="peek-img-slot">
+          <span class="classified">CLASSIFIED</span>
+          <span class="peek-placeholder-txt">DROP IMG HERE<br>sneak-peek-5.jpg</span>
+        </div>
+        <div class="peek-label"><span>NPCat #1666</span><span class="id">05/06</span></div>
+      </div>
+      <div class="peek-card">
+        <div class="peek-img-slot">
+          <span class="classified">CLASSIFIED</span>
+          <span class="peek-placeholder-txt">DROP IMG HERE<br>sneak-peek-6.jpg</span>
+        </div>
+        <div class="peek-label"><span>NPCat #2222</span><span class="id">06/06</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TWITTER FEED -->
+<section id="feed">
+  <div class="section-inner">
+    <div class="eyebrow">// straight from the timeline</div>
+    <h2>Follow the Chaos</h2>
+    <p class="section-lede">
+      This is us, being normal, on
+      <a href="https://twitter.com/YOUR_TWITTER_HANDLE" target="_blank" rel="noopener">@YOUR_TWITTER_HANDLE</a>
+      — replace this link and the placeholder posts below with real ones whenever you're ready.
+    </p>
+    <div class="tweet-strip">
+      <div class="tweet-card">
+        <div class="tweet-head">
+          <div class="tweet-avatar">🐱</div>
+          <div>
+            <div class="tweet-name">NPCats</div>
+            <div class="tweet-handle">@YOUR_TWITTER_HANDLE</div>
+          </div>
+        </div>
+        <div class="tweet-body tweet-placeholder">[Placeholder tweet #1 — swap this with a real embedded post or screenshot once you've got one live.]</div>
+      </div>
+      <div class="tweet-card">
+        <div class="tweet-head">
+          <div class="tweet-avatar">🐱</div>
+          <div>
+            <div class="tweet-name">NPCats</div>
+            <div class="tweet-handle">@YOUR_TWITTER_HANDLE</div>
+          </div>
+        </div>
+        <div class="tweet-body tweet-placeholder">[Placeholder tweet #2 — announcement, meme, or reveal teaser goes here.]</div>
+      </div>
+      <div class="tweet-card">
+        <div class="tweet-head">
+          <div class="tweet-avatar">🐱</div>
+          <div>
+            <div class="tweet-name">NPCats</div>
+            <div class="tweet-handle">@YOUR_TWITTER_HANDLE</div>
+          </div>
+        </div>
+        <div class="tweet-body tweet-placeholder">[Placeholder tweet #3 — community reaction or meme repost.]</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHITELIST FORM -->
+<section id="whitelist">
+  <div class="section-inner">
+    <div class="form-wrap">
+      <div class="eyebrow" style="color:var(--lime);">// last step</div>
+      <h2>Claim Your Whitelist Spot</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>Follow <a href="https://twitter.com/YOUR_TWITTER_HANDLE" target="_blank" rel="noopener">@YOUR_TWITTER_HANDLE</a> on Twitter.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>Like and retweet <a href="https://twitter.com/YOUR_TWITTER_HANDLE/status/PLACEHOLDER_TWEET_ID" target="_blank" rel="noopener">the pinned post</a>.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>Paste your retweet link and wallet address below.</div>
+        </div>
+      </div>
+
+      <form id="wlForm">
+        <div class="form-group">
+          <label for="twitterHandle">Your Twitter/X handle</label>
+          <input type="text" id="twitterHandle" placeholder="@yourhandle" required>
+        </div>
+        <div class="form-group">
+          <label for="retweetLink">Retweet link</label>
+          <input type="url" id="retweetLink" placeholder="https://twitter.com/yourhandle/status/..." required>
+        </div>
+        <div class="form-group">
+          <label for="walletAddress">Wallet address (ETH)</label>
+          <input type="text" id="walletAddress" placeholder="0x..." required pattern="^0x[a-fA-F0-9]{40}$" title="Enter a valid ETH address starting with 0x">
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="confirmCheck" required>
+          <label for="confirmCheck">I confirm I followed, liked, and retweeted — lying to a cat cartel is bad luck.</label>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">Submit Entry</button>
+        <div class="form-msg" id="formMsg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  NPCats © 2026 — Not financial advice. Definitely not legal advice. Possibly not even good advice.<br>
+  Built with questionable decisions and too much caffeine.
+</footer>
+
+<script>
+  // ------------------------------------------------------------------
+  // GOOGLE APPS SCRIPT INTEGRATION
+  // Replace SCRIPT_URL with your deployed Apps Script Web App URL.
+  // Make sure the Apps Script deployment access is set to "Anyone".
+  // ------------------------------------------------------------------
+  const SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+  const form = document.getElementById('wlForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const formMsg = document.getElementById('formMsg');
+
+  function showMsg(text, type){
+    formMsg.textContent = text;
+    formMsg.className = 'form-msg show ' + type;
+  }
+
+  function fireConfetti(){
+    const colors = ['#FF5CA8', '#C4F542', '#6B3FA0', '#F7F3E9'];
+    for(let i=0;i<60;i++){
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const size = Math.random()*8+6;
+      piece.style.width = size+'px';
+      piece.style.height = size+'px';
+      piece.style.left = Math.random()*100+'vw';
+      piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+      piece.style.transform = `rotate(${Math.random()*360}deg)`;
+      document.body.appendChild(piece);
+      const duration = Math.random()*2+2;
+      piece.animate([
+        { transform: piece.style.transform, top: '-10px', opacity:1 },
+        { transform: `rotate(${Math.random()*720}deg)`, top: '100vh', opacity:0.8 }
+      ], { duration: duration*1000, easing:'ease-in' });
+      setTimeout(()=>piece.remove(), duration*1000+100);
+    }
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    formMsg.className = 'form-msg';
+
+    const data = {
+      twitterHandle: document.getElementById('twitterHandle').value.trim(),
+      retweetLink: document.getElementById('retweetLink').value.trim(),
+      walletAddress: document.getElementById('walletAddress').value.trim(),
+      timestamp: new Date().toISOString()
+    };
+
+    if(!/^0x[a-fA-F0-9]{40}$/.test(data.walletAddress)){
+      showMsg("That doesn't look like a valid ETH wallet address. Double check it.", 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    try {
+      if(SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT")){
+        // No script URL configured yet — simulate success so you can test the UI.
+        console.warn("No Apps Script URL set yet. Simulating success for UI testing.");
+        await new Promise(r => setTimeout(r, 600));
+      } else {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // Apps Script + no-cors avoids most CORS issues on submit
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(data)
+        });
+      }
+
+      showMsg("You're in. Welcome to the litter box. 🐾", 'success');
+      fireConfetti();
+      form.reset();
+    } catch(err){
+      console.error(err);
+      showMsg("Something broke. Try again in a bit, or DM us on Twitter.", 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Entry";
+    }
+  });
+</script>
+
+</body>
+</html>
